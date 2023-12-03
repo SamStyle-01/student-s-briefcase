@@ -111,7 +111,7 @@ class SamRoot(QMainWindow):
 
         self.calendar.clicked.connect(lambda e: open_another_widget(1,
                                                                  (scalendar.width, scalendar.height),
-                                                                 (10 ** 6, 10 ** 6), state="calendar"))
+                                                                 (10 ** 6, 10 ** 6)))
         self.diary_constructor.clicked.connect(lambda e: open_another_widget(2,
                                                                 (diary_builder.width, diary_builder.height),
                                                                 (10 ** 6, 10 ** 6)))
@@ -143,14 +143,14 @@ class SamLogin(QDialog):
 
         layout = QVBoxLayout(self)
 
-        self.label_username = QLabel('Username:')
+        self.label_username = QLabel('Имя пользователя:')
         self.edit_username = QLineEdit(self)
 
-        self.label_password = QLabel('Password:')
+        self.label_password = QLabel('Пароль:')
         self.edit_password = QLineEdit(self)
         self.edit_password.setEchoMode(QLineEdit.EchoMode.Password)  # Скрытие вводимых символов
 
-        self.button_login = QPushButton('Log in', self)
+        self.button_login = QPushButton('Войти', self)
         self.button_login.clicked.connect(self.accept)
 
         layout.addWidget(self.label_username)
@@ -211,7 +211,8 @@ class SamSettings(QWidget):
         self.auth.clicked.connect(self.authorize)
         self.reload.clicked.connect(self.load_data)
         self.back_btn.clicked.connect(lambda e: open_another_widget(0, (root.width, root.height),
-                                                                    (int(root.width * 1.1), int(root.height * 1.1))))
+                                                                    (int(root.width * 1.1),
+                                                                     int(root.height * 1.1))))
         self.btn_clear_all.clicked.connect(self.clear_all)
 
         layout.addWidget(self.background_label, 0, 0, 5, 9)
@@ -507,7 +508,7 @@ class SamCalendar(QWidget):
 class SamDiaryBuilder(QWidget):
     def __init__(self):
         super().__init__()
-        self.width = 1200
+        self.width = 1220
         self.height = 700
 
         self.setMinimumSize(self.width, self.height)
@@ -522,7 +523,8 @@ class SamDiaryBuilder(QWidget):
         self.back_btn = QPushButton("Назад", self)
         self.back_btn.setFont(font)
         self.back_btn.clicked.connect(lambda e: open_another_widget(0, (root.width, root.height),
-                                                                    (int(root.width * 1.1), int(root.height * 1.1))))
+                                                                    (int(root.width * 1.1),
+                                                                     int(root.height * 1.1))))
         self.back_btn.setMinimumHeight(35)
         self.back_btn.setMaximumHeight(45)
         self.back_btn.setStyleSheet("background-color: orange;")
@@ -629,7 +631,7 @@ class SamDiaryBuilder(QWidget):
 
     def save_note_file(self):
         if self.name.text() == "" and self.for_text.toPlainText() == "":
-            QMessageBox.critical(self, "Неполные данные", "Вы не заполнили поле названия и текста.")
+            QMessageBox.critical(self, "Неполные данные", "Вы не заполнили поля названия и текста.")
         elif self.name.text() == "":
             QMessageBox.critical(self, "Неполные данные", "Вы не заполнили поле названия.")
         elif self.for_text.toPlainText() == "":
@@ -668,7 +670,7 @@ class SamDiaryBuilder(QWidget):
             cursor.execute('SELECT MAX("Index") FROM Diary;')
             max_index = cursor.fetchone()[0]
             if self.name.text() == "" and self.for_text.toPlainText() == "":
-                QMessageBox.critical(self, "Неполные данные", "Вы не заполнили поле названия и текста.")
+                QMessageBox.critical(self, "Неполные данные", "Вы не заполнили поля названия и текста.")
             elif self.name.text() == "":
                 QMessageBox.critical(self, "Неполные данные", "Вы не заполнили поле названия.")
             elif self.for_text.toPlainText() == "":
@@ -751,7 +753,7 @@ class SamNewProj(QWidget):
                                                (10 ** 6, 10 ** 6)))
         self.back_btn.setMinimumHeight(35)
         self.back_btn.setMaximumHeight(45)
-        self.back_btn.setStyleSheet("background-color: #d77d31;")
+        self.back_btn.setStyleSheet("background-color: orange;")
 
         self.layout = QGridLayout(self)
         self.layout.setContentsMargins(0, 0, 0, 0)
@@ -788,9 +790,9 @@ class SamNewProj(QWidget):
         self.lst.setStyleSheet("background-color: #d0d0d0")
 
         self.lst.addItem("IT")
-        self.lst.addItem("Engineering")
-        self.lst.addItem("Social")
-        self.lst.addItem("Other")
+        self.lst.addItem("Инженерия")
+        self.lst.addItem("Соцпроект")
+        self.lst.addItem("Другое")
 
         lbl2 = QLabel("Новый проект")
         lbl2.setFont(QFont("Segoe Print", 18))
@@ -825,7 +827,7 @@ class SamNewProj(QWidget):
     def create_it(self):
         global authorized
         if self.name.text() == "" and self.for_text.toPlainText() == "":
-            QMessageBox.critical(self, "Неполные данные", "Вы не заполнили поле названия и текста.")
+            QMessageBox.critical(self, "Неполные данные", "Вы не заполнили поля названия и текста.")
         elif self.name.text() == "":
             QMessageBox.critical(self, "Неполные данные", "Вы не заполнили поле названия.")
         elif self.for_text.toPlainText() == "":
@@ -833,11 +835,12 @@ class SamNewProj(QWidget):
         elif self.lst.currentItem() is None:
             QMessageBox.critical(self, "Неполные данные", "Вы не указали категорию проекта.")
         else:
+            els = {"Инженерия": "Engineering", "IT": "IT", "Соцпроект": "Social", "Другое": "Other"}
             if self.chosen_file:
                 try:
                     response = requests.post(flask_server_url + "add_proj", data={"name": self.name.text(),
                                                                      "text": self.for_text.toPlainText(),
-                                                                     "category": self.lst.currentItem().text(),
+                                                                     "category": els[self.lst.currentItem().text()],
                                                                      "username": authorized[0]},
                                                                      files={'file': (path.basename(self.chosen_file),
                                                                                      open(self.chosen_file, 'rb'))})
@@ -849,7 +852,7 @@ class SamNewProj(QWidget):
                 try:
                     response = requests.post(flask_server_url + "add_proj", data={"name": self.name.text(),
                                                                      "text": self.for_text.toPlainText(),
-                                                                     "category": self.lst.currentItem().text(),
+                                                                     "category": els[self.lst.currentItem().text()],
                                                                      "username": authorized[0]})
                     response.raise_for_status()  # Проверка успешности запроса
                 except requests.exceptions.RequestException as e:
@@ -956,7 +959,7 @@ class SamDelProj(QWidget):
                                        (authorized[0], name))
                         file = cursor.fetchone()
                         if file[0]:
-                            os.remove("Proj_pictures/" + file)
+                            os.remove("Proj_pictures/" + file[0])
 
                         cursor.execute('DELETE FROM Projects WHERE Owner = ? AND Name = ?;',
                                        (authorized[0], name))
@@ -1015,7 +1018,8 @@ class SamWorldProjects(QWidget):
         self.back_btn.setStyleSheet("background-color: orange;")
         self.back_btn.setFont(font)
         self.back_btn.clicked.connect(lambda e: open_another_widget(0, (root.width, root.height),
-                                                                    (int(root.width * 1.1), int(root.height * 1.1))))
+                                                                    (int(root.width * 1.1),
+                                                                     int(root.height * 1.1))))
 
         layout = QGridLayout(self)
         layout.setContentsMargins(0, 0, 0, 0)
@@ -1446,7 +1450,8 @@ class SamProfilesOrgs(QWidget):
         self.back_btn.setStyleSheet("background-color: orange;")
         self.back_btn.setFont(font)
         self.back_btn.clicked.connect(lambda e: open_another_widget(0, (root.width, root.height),
-                                                                    (int(root.width * 1.1), int(root.height * 1.1))))
+                                                                    (int(root.width * 1.1),
+                                                                     int(root.height * 1.1))))
 
         layout = QGridLayout(self)
         layout.setContentsMargins(0, 0, 0, 0)
@@ -1482,7 +1487,7 @@ class SamProfilesOrgs(QWidget):
                 lst_wdgts.append(lbl2)
 
             text = QTextEdit(self)
-            text.setPlainText(orgs[i][2])
+            text.setPlainText(orgs[i][2] + "\n\nКонтакты: " + orgs[i][3] + ".")
             text.setFont(font)
             text.setMinimumHeight(int(len(orgs[i][2]) * 1.3))
             text.setReadOnly(True)
@@ -1731,6 +1736,7 @@ class SamProfilesOrgs(QWidget):
 
 
 def open_another_widget(index, min_sizes, max_sizes, *, state=None):
+    global stack_root
     stack_root.setCurrentIndex(index)
     stack_root.setMinimumSize(min_sizes[0], min_sizes[1])
     stack_root.setMaximumSize(max_sizes[0], max_sizes[1])

@@ -121,7 +121,7 @@ def delete_proj():
     file = cursor2.fetchone()
     print(file)
     if file[0]:
-        os.remove("for_download/Prof_pictures/" + file[0])
+        os.remove("for_download/Proj_pictures/" + file[0])
 
     cursor2.execute('DELETE FROM Projects WHERE Owner = ? AND Name = ?;', (owner, name))
     cursor2.connection.commit()
